@@ -5836,6 +5836,12 @@ var
   IsInternal  : Boolean;
   EndPtr      : Pointer;
 begin
+  // Do not let the first record constructor read beyond a truncated file.
+  // The selected game's definitions supply the header size (16, 20 or 24).
+  if flSize < wbSizeOfMainRecordStruct then
+    raise Exception.CreateFmt('Truncated plugin header in file "%s": expected at least %d bytes, found %d',
+      [flFileName, wbSizeOfMainRecordStruct, flSize]);
+
   SelfRef := Self as IwbContainerElementRef;
   flProgress('Start processing');
 
@@ -20169,7 +20175,9 @@ end;
 function TwbElement.GetElementType: TwbElementType;
 begin
   Assert(False, 'This method is abstract');
+  {$IFOPT C-}
   Result := TwbElementType(-1);
+  {$ENDIF}
 end;
 
 function TwbElement.GetFile: IwbFile;

@@ -1,0 +1,17 @@
+diff --git a/libdeflate.pas b/libdeflate.pas
+index d76ef57..5fb7012 100644
+--- a/libdeflate.pas
++++ b/libdeflate.pas
+@@ -910,5 +910,12 @@ end;
+ 
+ {$endif USE_LIBDEFLATE_DLL}
+ 
++{$if defined(WIN64) and not defined(FPC) and not defined(USE_LIBDEFLATE_DLL)}
++// Delphi emits H2164 at unit end for the C global libdeflate_x86_cpu_features.
++// COFF references in adler32.o, crc32.o and deflate_decompress.o require it.
++// Exempt this end-of-unit foreign-symbol diagnostic only; all Pascal code
++// above is compiled with the caller's hint settings, and warnings stay enabled.
++{$HINTS OFF}
++{$ifend}
+ end.
+ 

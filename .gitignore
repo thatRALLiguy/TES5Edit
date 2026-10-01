@@ -220,6 +220,7 @@ pip-log.txt
 
 *.dcu
 /*.res
+/Tests/*.res
 /Tools/SniffGUI/*.res
 *.local
 *.identcache

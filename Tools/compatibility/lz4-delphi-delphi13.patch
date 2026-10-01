@@ -1,0 +1,13 @@
+diff --git a/lz4d.lz4s.pas b/lz4d.lz4s.pas
+index 313bf5d..ec8f063 100644
+--- a/lz4d.lz4s.pas
++++ b/lz4d.lz4s.pas
+@@ -378,7 +378,7 @@ begin
+     PCardinal(LBytePtr)^ := LOutBytes and $7FFFFFFF; //highes bit = 0 = compressed
+     //inc stream size
+     {$IF CompilerVersion <= 20}{$RANGECHECKS OFF}{$IFEND} // RangeCheck might cause Internal-Error C1118
+-    AStreamDescriptor.StreamSize := LOutBytes + AStreamDescriptor.StreamSize;
++    AStreamDescriptor.StreamSize := UInt64(LOutBytes) + AStreamDescriptor.StreamSize;
+     {$IF CompilerVersion <= 20}{$RANGECHECKS ON}{$IFEND} // RangeCheck might cause Internal-Error C1118
+     //byte written
+     Result := LOutBytes + 4;

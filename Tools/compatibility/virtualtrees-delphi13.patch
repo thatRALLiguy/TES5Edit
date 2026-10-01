@@ -1,0 +1,44 @@
+diff --git a/Source/VirtualTrees.pas b/Source/VirtualTrees.pas
+index d619d60..b4dd92d 100644
+--- a/Source/VirtualTrees.pas
++++ b/Source/VirtualTrees.pas
+@@ -1138,10 +1138,10 @@ type
+     FColumnPopupMenu: TPopupMenu; // Member for storing the TVTHeaderPopupMenu
+ 
+     function GetCount: TDimension;
+-    function GetItem(Index: TColumnIndex): TVirtualTreeColumn;
++    function GetItem(Index: Integer): TVirtualTreeColumn;
+     function GetNewIndex(P: TPoint; var OldIndex: TColumnIndex): Boolean;
+     procedure SetDefaultWidth(Value: TDimension);
+-    procedure SetItem(Index: TColumnIndex; Value: TVirtualTreeColumn);
++    procedure SetItem(Index: Integer; Value: TVirtualTreeColumn);
+   protected
+     // drag support
+     FDragIndex: TColumnIndex;             // index of column currently being dragged
+@@ -1210,7 +1210,7 @@ type
+     property Count: Integer read GetCount;
+     property ClickIndex: TColumnIndex read FClickIndex;
+     property DefaultWidth: TDimension read FDefaultWidth write SetDefaultWidth;
+-    property Items[Index: TColumnIndex]: TVirtualTreeColumn read GetItem write SetItem; default;
++    property Items[Index: Integer]: TVirtualTreeColumn read GetItem write SetItem; default;
+     property Header: TVTHeader read FHeader;
+     property TrackIndex: TColumnIndex read FTrackIndex;
+ 	{>>>}
+@@ -7927,7 +7927,7 @@ end;
+ 
+ //----------------------------------------------------------------------------------------------------------------------
+ 
+-function TVirtualTreeColumns.GetItem(Index: TColumnIndex): TVirtualTreeColumn;
++function TVirtualTreeColumns.GetItem(Index: Integer): TVirtualTreeColumn;
+ 
+ begin
+   Result := TVirtualTreeColumn(inherited GetItem(Index));
+@@ -7966,7 +7966,7 @@ end;
+ 
+ //----------------------------------------------------------------------------------------------------------------------
+ 
+-procedure TVirtualTreeColumns.SetItem(Index: TColumnIndex; Value: TVirtualTreeColumn);
++procedure TVirtualTreeColumns.SetItem(Index: Integer; Value: TVirtualTreeColumn);
+ 
+ begin
+   inherited SetItem(Index, Value);

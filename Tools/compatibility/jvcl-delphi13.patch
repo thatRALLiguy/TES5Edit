@@ -1,0 +1,383 @@
+diff --git a/jvcl/devtools/JvExVCL/src/JvExExtCtrls.pas b/jvcl/devtools/JvExVCL/src/JvExExtCtrls.pas
+index d0d2e2d17..045f9e3bf 100644
+--- a/jvcl/devtools/JvExVCL/src/JvExExtCtrls.pas
++++ b/jvcl/devtools/JvExVCL/src/JvExExtCtrls.pas
+@@ -154,7 +154,7 @@ end;
+ // of 0. This is actually a TWinControl.AlignControl bug.
+ procedure SplitterMouseDownFix(Splitter: TSplitter);
+ var
+-  Control: TControl;
++  TargetControl: TControl;
+   Pt: TPoint;
+   R: TRect;
+   I, Size: Integer;
+@@ -163,7 +163,7 @@ begin
+   begin
+     if Align in [alLeft, alTop] then
+     begin
+-      Control := nil;
++      TargetControl := nil;
+       Pt := Point(Left, Top);
+       if Align = alLeft then
+         Dec(Pt.X)
+@@ -172,14 +172,14 @@ begin
+ 
+       for I := 0 to Parent.ControlCount - 1 do
+       begin
+-        Control := Parent.Controls[I];
+-        R := Control.BoundsRect;
++        TargetControl := Parent.Controls[I];
++        R := TargetControl.BoundsRect;
+         if Align = alLeft then
+           Size := R.Right - R.Left
+         else //if Align = alTop then
+           Size := R.Bottom - R.Top;
+ 
+-        if Control.Visible and Control.Enabled and (Size = 0) then
++        if TargetControl.Visible and TargetControl.Enabled and (Size = 0) then
+         begin
+           if Align = alLeft then
+             Dec(R.Left)
+@@ -189,10 +189,10 @@ begin
+           if PtInRect(R, Pt) then
+             Break;
+         end;
+-        Control := nil;
++        TargetControl := nil;
+       end;
+ 
+-      if Control = nil then
++      if TargetControl = nil then
+       begin
+         // Check for the control that is zero-sized but after the splitter.
+         // TWinControl.AlignControls does not work properly with alLeft/alTop.
+@@ -203,14 +203,14 @@ begin
+ 
+         for I := 0 to Parent.ControlCount - 1 do
+         begin
+-          Control := Parent.Controls[I];
+-          R := Control.BoundsRect;
++          TargetControl := Parent.Controls[I];
++          R := TargetControl.BoundsRect;
+           if Align = alLeft then
+             Size := R.Right - R.Left
+           else //if Align = alTop then
+             Size := R.Bottom - R.Top;
+ 
+-          if Control.Visible and Control.Enabled and (Size = 0) then
++          if TargetControl.Visible and TargetControl.Enabled and (Size = 0) then
+           begin
+             if Align = alLeft then
+               Dec(R.Left)
+@@ -220,16 +220,16 @@ begin
+             if PtInRect(R, Pt) then
+               Break;
+           end;
+-          Control := nil;
++          TargetControl := nil;
+         end;
+ 
+-        if Control <> nil then
++        if TargetControl <> nil then
+         begin
+           // realign left/top control
+           if Align = alLeft then
+-            Control.Left := -1
++            TargetControl.Left := -1
+           else // if Align = alTop then
+-            Control.Top := -1;
++            TargetControl.Top := -1;
+         end;
+       end;
+     end;
+diff --git a/jvcl/devtools/JvExVCL/src/JvExMask.pas b/jvcl/devtools/JvExVCL/src/JvExMask.pas
+index a82eb8923..f92e0f407 100644
+--- a/jvcl/devtools/JvExVCL/src/JvExMask.pas
++++ b/jvcl/devtools/JvExVCL/src/JvExMask.pas
+@@ -113,6 +113,9 @@ const
+ implementation
+ 
+ uses
++  {$IFDEF RTL230_UP}
++  Vcl.Themes, // Required by the inline StyleServices wrapper.
++  {$ENDIF}
+   JclSysInfo;
+ 
+ {$IFNDEF COMPILER12_UP}
+diff --git a/jvcl/devtools/JvExVCL/src/JvExStdCtrls.pas b/jvcl/devtools/JvExVCL/src/JvExStdCtrls.pas
+index 6185df251..1615970d0 100644
+--- a/jvcl/devtools/JvExVCL/src/JvExStdCtrls.pas
++++ b/jvcl/devtools/JvExVCL/src/JvExStdCtrls.pas
+@@ -127,6 +127,9 @@ const
+ implementation
+ 
+ uses
++  {$IFDEF RTL230_UP}
++  Vcl.Themes, // Required by the inline StyleServices wrapper.
++  {$ENDIF}
+   JclSysInfo;
+ 
+ {$IFNDEF COMPILER12_UP}
+diff --git a/jvcl/run/JvExExtCtrls.pas b/jvcl/run/JvExExtCtrls.pas
+index 3b4b38561..c41c39ddb 100644
+--- a/jvcl/run/JvExExtCtrls.pas
++++ b/jvcl/run/JvExExtCtrls.pas
+@@ -5852,7 +5852,7 @@ end;
+ // of 0. This is actually a TWinControl.AlignControl bug.
+ procedure SplitterMouseDownFix(Splitter: TSplitter);
+ var
+-  Control: TControl;
++  TargetControl: TControl;
+   Pt: TPoint;
+   R: TRect;
+   I, Size: Integer;
+@@ -5861,7 +5861,7 @@ begin
+   begin
+     if Align in [alLeft, alTop] then
+     begin
+-      Control := nil;
++      TargetControl := nil;
+       Pt := Point(Left, Top);
+       if Align = alLeft then
+         Dec(Pt.X)
+@@ -5870,14 +5870,14 @@ begin
+ 
+       for I := 0 to Parent.ControlCount - 1 do
+       begin
+-        Control := Parent.Controls[I];
+-        R := Control.BoundsRect;
++        TargetControl := Parent.Controls[I];
++        R := TargetControl.BoundsRect;
+         if Align = alLeft then
+           Size := R.Right - R.Left
+         else //if Align = alTop then
+           Size := R.Bottom - R.Top;
+ 
+-        if Control.Visible and Control.Enabled and (Size = 0) then
++        if TargetControl.Visible and TargetControl.Enabled and (Size = 0) then
+         begin
+           if Align = alLeft then
+             Dec(R.Left)
+@@ -5887,10 +5887,10 @@ begin
+           if PtInRect(R, Pt) then
+             Break;
+         end;
+-        Control := nil;
++        TargetControl := nil;
+       end;
+ 
+-      if Control = nil then
++      if TargetControl = nil then
+       begin
+         // Check for the control that is zero-sized but after the splitter.
+         // TWinControl.AlignControls does not work properly with alLeft/alTop.
+@@ -5901,14 +5901,14 @@ begin
+ 
+         for I := 0 to Parent.ControlCount - 1 do
+         begin
+-          Control := Parent.Controls[I];
+-          R := Control.BoundsRect;
++          TargetControl := Parent.Controls[I];
++          R := TargetControl.BoundsRect;
+           if Align = alLeft then
+             Size := R.Right - R.Left
+           else //if Align = alTop then
+             Size := R.Bottom - R.Top;
+ 
+-          if Control.Visible and Control.Enabled and (Size = 0) then
++          if TargetControl.Visible and TargetControl.Enabled and (Size = 0) then
+           begin
+             if Align = alLeft then
+               Dec(R.Left)
+@@ -5918,16 +5918,16 @@ begin
+             if PtInRect(R, Pt) then
+               Break;
+           end;
+-          Control := nil;
++          TargetControl := nil;
+         end;
+ 
+-        if Control <> nil then
++        if TargetControl <> nil then
+         begin
+           // realign left/top control
+           if Align = alLeft then
+-            Control.Left := -1
++            TargetControl.Left := -1
+           else // if Align = alTop then
+-            Control.Top := -1;
++            TargetControl.Top := -1;
+         end;
+       end;
+     end;
+diff --git a/jvcl/run/JvExMask.pas b/jvcl/run/JvExMask.pas
+index 9feed8c05..b37bcbdef 100644
+--- a/jvcl/run/JvExMask.pas
++++ b/jvcl/run/JvExMask.pas
+@@ -251,6 +251,9 @@ const
+ implementation
+ 
+ uses
++  {$IFDEF RTL230_UP}
++  Vcl.Themes, // Required by the inline StyleServices wrapper.
++  {$ENDIF}
+   JclSysInfo;
+ 
+ {$IFNDEF COMPILER12_UP}
+diff --git a/jvcl/run/JvExStdCtrls.pas b/jvcl/run/JvExStdCtrls.pas
+index c8a4422ae..501ebd482 100644
+--- a/jvcl/run/JvExStdCtrls.pas
++++ b/jvcl/run/JvExStdCtrls.pas
+@@ -1166,6 +1166,9 @@ const
+ implementation
+ 
+ uses
++  {$IFDEF RTL230_UP}
++  Vcl.Themes, // Required by the inline StyleServices wrapper.
++  {$ENDIF}
+   JclSysInfo;
+ 
+ {$IFNDEF COMPILER12_UP}
+diff --git a/jvcl/run/JvInterpreter_SysUtils.pas b/jvcl/run/JvInterpreter_SysUtils.pas
+index e7b089fa7..bf36917b4 100644
+--- a/jvcl/run/JvInterpreter_SysUtils.pas
++++ b/jvcl/run/JvInterpreter_SysUtils.pas
+@@ -82,6 +82,14 @@ begin
+   Result := TSearchRec(V2R(SearchRec)^);
+ end;
+ 
++{$IF CompilerVersion >= 23}
++// Expose the RTL timestamp without the legacy DOS date/time limitation.
++procedure TSearchRec_Read_TimeStamp(var Value: Variant; Args: TJvInterpreterArgs);
++begin
++  Value := TSearchRec(P2R(Args.Obj)^).TimeStamp;
++end;
++{$IFEND}
++
+ { Exception }
+ 
+ { constructor Create(Msg: string) }
+@@ -2051,7 +2059,11 @@ begin
+       RFD('FindHandle', 20, varInteger)
+       {$ENDIF}
+       *)
++      // Keep the writable legacy field for existing scripts. New scripts can
++      // use TimeStamp below; replacing Time with a TDateTime would break them.
++      {$WARN SYMBOL_DEPRECATED OFF}
+       RFD('Time', NativeInt(@SR.Time)-NativeInt(@SR), varInteger),
++      {$WARN SYMBOL_DEPRECATED ON}
+       RFD('Size', NativeInt(@SR.Size)-NativeInt(@SR), varInteger),     // Supports only integer size
+       RFD('Attr', NativeInt(@SR.Attr)-NativeInt(@SR), varInteger),
+       RFD('Name', NativeInt(@SR.Name)-NativeInt(@SR), varString),
+@@ -2060,6 +2072,9 @@ begin
+ 	  {<<<}
+       ],
+       JvInterpreter_NewTSearchRec, JvInterpreter_DisposeTSearchRec, nil);
++    {$IF CompilerVersion >= 23}
++    AddRecGet(cSysUtils, 'TSearchRec', 'TimeStamp', TSearchRec_Read_TimeStamp, 0, [varEmpty], varDouble);
++    {$IFEND}
+     { regional options }
+     { global variables are not supported by JvInterpreter :( }
+   end;
+diff --git a/jvcl/run/JvJCLUtils.pas b/jvcl/run/JvJCLUtils.pas
+index e056cbcc8..7626cc065 100644
+--- a/jvcl/run/JvJCLUtils.pas
++++ b/jvcl/run/JvJCLUtils.pas
+@@ -1068,13 +1068,16 @@ function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
+ type
+   TIntegerListChange = procedure(Sender: TObject; Item: Integer; Action: TListNotification) of object;
+ 
++  // Match the RTL list index so the typed Items property hides the base property.
++  TJvIntegerListIndex = {$IF CompilerVersion >= 37}NativeInt{$ELSE}Integer{$IFEND};
++
+   TIntegerList = class(TList)
+   private
+     FOnChange: TIntegerListChange;
+     FLoading: Boolean;
+ 
+-    function GetItem(Index: Integer): Integer;
+-    procedure SetItem(Index: Integer; const Value: Integer);
++    function GetItem(Index: TJvIntegerListIndex): Integer;
++    procedure SetItem(Index: TJvIntegerListIndex; const Value: Integer);
+   protected
+     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+     procedure DoChange(Item: Integer; Action: TListNotification);
+@@ -1092,7 +1095,7 @@ type
+     procedure Insert(Index: Integer; Item: Integer);
+     function Last: Integer;
+     function Remove(Item: Integer): Integer;
+-    property Items[Index: Integer]: Integer read GetItem write SetItem; default;
++    property Items[Index: TJvIntegerListIndex]: Integer read GetItem write SetItem; default;
+ 
+     property OnChange: TIntegerListChange read FOnChange write FOnChange;
+   end;
+@@ -8695,7 +8698,7 @@ begin
+   Result := Integer(inherited First);
+ end;
+ 
+-function TIntegerList.GetItem(Index: Integer): Integer;
++function TIntegerList.GetItem(Index: TJvIntegerListIndex): Integer;
+ begin
+   Result := Integer(inherited Items[Index]);
+ end;
+@@ -8739,7 +8742,7 @@ begin
+   Result := Integer(inherited Remove(TObject(Item)));
+ end;
+ 
+-procedure TIntegerList.SetItem(Index: Integer; const Value: Integer);
++procedure TIntegerList.SetItem(Index: TJvIntegerListIndex; const Value: Integer);
+ begin
+   inherited Items[Index] := TObject(Value);
+ end;
+diff --git a/jvcl/run/JvRichEdit.pas b/jvcl/run/JvRichEdit.pas
+index 72ac22bb9..2c01e0ac4 100644
+--- a/jvcl/run/JvRichEdit.pas
++++ b/jvcl/run/JvRichEdit.pas
+@@ -1133,11 +1133,14 @@ type
+       const chrg: TCharRange; out Menu: HMENU): HRESULT; stdcall;
+   end;
+ 
++  // Match the RTL list index so the typed Items property hides the base property.
++  TJvConversionListIndex = {$IF CompilerVersion >= 37}NativeInt{$ELSE}Integer{$IFEND};
++
+   TConversionFormatList = class(TObjectList)
+   private
+     FRTFConvIndex: Integer;
+     FTextConvIndex: Integer;
+-    function GetItem(Index: Integer): TJvConversion;
++    function GetItem(Index: TJvConversionListIndex): TJvConversion;
+   public
+     constructor Create; virtual;
+     { GetConverter implicitly calls Result.Init, thus caller must call Result.Done }
+@@ -1147,7 +1150,7 @@ type
+       const Kind: TJvConversionKind): TJvConversion; overload;
+     function GetFilter(const AKind: TJvConversionKind): string;
+     function DefaultConverter: TJvConversion;
+-    property Items[Index: Integer]: TJvConversion read GetItem {write SetItem}; default;
++    property Items[Index: TJvConversionListIndex]: TJvConversion read GetItem {write SetItem}; default;
+   end;
+ 
+   TImageDataObject = class(TInterfacedObject, IDataObject)
+@@ -2298,7 +2301,7 @@ begin
+     System.Delete(Result, Length(Result), 1);
+ end;
+ 
+-function TConversionFormatList.GetItem(Index: Integer): TJvConversion;
++function TConversionFormatList.GetItem(Index: TJvConversionListIndex): TJvConversion;
+ begin
+   Result := inherited Items[Index] as TJvConversion;
+ end;
+diff --git a/jvcl/run/JvSpeedButton.pas b/jvcl/run/JvSpeedButton.pas
+index bcf738dad..f5741cfb8 100644
+--- a/jvcl/run/JvSpeedButton.pas
++++ b/jvcl/run/JvSpeedButton.pas
+@@ -511,6 +511,9 @@ const
+ implementation
+ 
+ uses
++  {$IFDEF RTL230_UP}
++  Vcl.Themes, // Required by the inline StyleServices wrapper.
++  {$ENDIF}
+   Math, JvJCLUtils, JvJVCLUtils;
+ 
+ type

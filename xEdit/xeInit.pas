@@ -1576,7 +1576,9 @@ begin
     s := xeDefaultScriptHost;
   TxeScriptHost.Init(s);
 
-  wbApplicationTitle := wbAppName + wbToolName + ' ' + VersionString;
+  wbApplicationTitle := wbAppName + wbToolName + ' ' + wbBuildLabel;
+  if VersionString.Title <> '' then
+    wbApplicationTitle := wbApplicationTitle + ' ' + VersionString.Title;
   {$IFDEF LiteVersion}
   wbApplicationTitle := wbApplicationTitle + ' Lite';
   {$ENDIF}

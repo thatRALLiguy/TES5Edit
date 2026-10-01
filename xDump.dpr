@@ -732,8 +732,10 @@ begin
     end;
   end;
 
-  if DumpCheckReport and (Error <> '') then
+  if DumpCheckReport and (Error <> '') then begin
+    ExitCode := 1;
     WriteLn(aIndent, '[ERROR: ', Error ,']');
+  end;
 
   if Supports(aElement, IwbContainer, Container) and (DumpHidden or (Pos('Hidden: ', Name)<>1)) then
     WriteContainer(Container, aIndent);
@@ -1164,6 +1166,9 @@ begin
         end;
         gmSF1: begin
           wbGameName           := 'Starfield';
+          // Starfield stores full, small and medium master indices separately.
+          // Match xEdit before definitions or files interpret any FormIDs.
+          wbComplexFileFileID  := True;
           wbCreateContainedIn  := False;
           wbVWDAsQuestChildren := True;
           case wbToolSource of
@@ -1256,7 +1261,9 @@ begin
      if SourceName = 'Plugins' then
        SourceName := '';
 
-     wbApplicationTitle := wbAppName + wbToolName + SourceName +  ' ' + VersionString;
+     wbApplicationTitle := wbAppName + wbToolName + SourceName +  ' ' + wbBuildLabel;
+     if VersionString.Title <> '' then
+       wbApplicationTitle := wbApplicationTitle + ' ' + VersionString.Title;
      {$IFDEF WIN64}
      wbApplicationTitle := wbApplicationTitle + ' x64';
      {$ENDIF WIN64}
@@ -1548,6 +1555,7 @@ begin
         WriteLn(ErrOutput, '-top:N       ', 'If specified, only dump the first N records');
         WriteLn(ErrOutput, '-check       ', 'Performs "Check for Errors" instead of dumping content');
         WriteLn(ErrOutput, '-dcr         ', 'Dumps record content while performing "Check for Errors" on each element and generates a report');
+        WriteLn(ErrOutput, '             ', 'Exit codes: 1 = check errors, 2 = unexpected execution failure.');
         WriteLn(ErrOutput, '-es          ', 'Dumps size for all elements');
         WriteLn(ErrOutput, '-dh          ', 'Dumps normally hidden elements');
         WriteLn(ErrOutput, '             ', '');
@@ -1755,9 +1763,10 @@ begin
       ReportProgress('Finished loading record. Starting Dump.');
 
       if wbToolMode in [tmDump] then begin
-        if FindCmdLineSwitch('check') and not wbReportMode then
-          CheckForErrors(0, _File)
-        else begin
+        if FindCmdLineSwitch('check') and not wbReportMode then begin
+          if CheckForErrors(0, _File) then
+            ExitCode := 1;
+        end else begin
           if DontWriteReport then
             ProgressLocked := True;
           WriteContainer(_File);
@@ -1786,8 +1795,10 @@ begin
 
       ReportProgress('All Done.');
     except
-      on e: Exception do
+      on e: Exception do begin
+        ExitCode := 2;
         ReportProgress('Unexpected Error: <'+e.ClassName+': '+e.Message+'>');
+      end;
     end;
   finally
     if DebugHook <> 0 then begin

@@ -48,6 +48,8 @@ begin
   aValue := '';
   for i := 1 to ParamCount do begin
     s := ParamStr(i);
+    if s = '' then
+      Continue;
     if (aChars = []) or CharInSet(s[1], aChars) then begin
       Delete(s, 1, 1);
       if s.StartsWith(aSwitch + ':', aIgnoreCase) then begin
@@ -76,7 +78,16 @@ begin
   aValue := '';
   for i := aStartIndex to ParamCount do begin
     s := ParamStr(i);
-    if (aChars = []) or CharInSet(s[1], aChars) then // skipped
+    if aChars = [] then begin
+      Inc(aStartIndex);
+      Continue;
+    end;
+    if s = '' then begin
+      // An explicitly empty positional argument is still an argument.
+      aStartIndex := i + 1;
+      Exit(True);
+    end;
+    if CharInSet(s[1], aChars) then // skipped
       Inc(aStartIndex)
     else begin
       aValue := ParamStr(i);

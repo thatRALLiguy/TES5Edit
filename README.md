@@ -98,6 +98,23 @@ Getting started with xEdit development requires a properly configured Delphi env
 
 If you don't already have a Delphi environment, we recommend using [Delphi 12 Community Edition](https://www.embarcadero.com/products/delphi/starter).
 
+For this fork with Delphi 13, initialize the pinned submodules, then run
+`powershell -File .\Tools\Prepare-Delphi13.ps1` from the repository root before
+opening the IDE. This applies the reviewed compatibility patches for SynEdit,
+JVCL, JCL, VirtualTrees, vcl-styles-utils, ImagingLib, lz4-delphi and
+libdeflate-pas, and creates missing JCL configuration files from the upstream
+template. Patches are kept in `Tools/compatibility`; the affected submodules
+will show local modifications while they are applied. Their original pinned
+commits are retained. The script can be rerun and refuses unexpected dependency
+revisions. Run `python Tests/delphi13_patches.py` to verify that the patches
+reproduce the modified dependency sources.
+Compile through the Community Edition IDE.
+
+The current build is not release-validated. A script that copies a populated
+`TSearchRec` still fails with an invalid-pointer error. See
+[IMPROVEMENTS.md](IMPROVEMENTS.md) for completed checks and remaining release
+gates; clean compiler diagnostics do not establish runtime or gameplay safety.
+
 ### Install Dependencies
 
 - Download and install [Project Magician](https://www.uweraabe.de/Blog/downloads/download-info/project-magician/).

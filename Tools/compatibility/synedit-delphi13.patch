@@ -1,0 +1,123 @@
+diff --git a/Source/SynEdit.inc b/Source/SynEdit.inc
+index 85c2e4a..a4aca74 100644
+--- a/Source/SynEdit.inc
++++ b/Source/SynEdit.inc
+@@ -161,7 +161,15 @@
+ { VERXXX to SYN_COMPILERX, SYN_DELPHIX and SYN_CPPBX mappings                  }
+ {------------------------------------------------------------------------------}
+ 
+-{$IFDEF VER360}
++{$IFDEF VER370}
++  {$DEFINE SYN_COMPILER_30}
++  {$DEFINE SYN_COMPILER_30_UP}
++  {$DEFINE SYN_DELPHI}
++  {$DEFINE SYN_DELPHI_13_0}
++  {$DEFINE SYN_DELPHI_13_0_UP}
++{$ENDIF}
++
++{$IFDEF VER360}
+   {$DEFINE SYN_COMPILER_29}
+   {$DEFINE SYN_DELPHI}
+   {$DEFINE SYN_DELPHI_12_0}
+@@ -811,7 +819,7 @@
+   {$DEFINE SYN_COMPILER_28_UP}
+ {$ENDIF}
+ 
+-{$IFDEF SYN_COMPILER_29}
++{$IF Defined(SYN_COMPILER_29) or Defined(SYN_COMPILER_30)}
+   {$DEFINE SYN_COMPILER_1_UP}
+   {$DEFINE SYN_COMPILER_2_UP}
+   {$DEFINE SYN_COMPILER_3_UP}
+@@ -1267,7 +1275,7 @@
+   {$DEFINE SYN_DELPHI_11_0_UP}
+ {$ENDIF}
+ 
+-{$IFDEF SYN_DELPHI_12_0}
++{$IF Defined(SYN_DELPHI_12_0) or Defined(SYN_DELPHI_13_0)}
+   {$DEFINE SYN_DELPHI_2_UP}
+   {$DEFINE SYN_DELPHI_3_UP}
+   {$DEFINE SYN_DELPHI_4_UP}
+diff --git a/Source/SynEdit.pas b/Source/SynEdit.pas
+index f8a38c5..cb1e3c2 100644
+--- a/Source/SynEdit.pas
++++ b/Source/SynEdit.pas
+@@ -293,13 +293,16 @@ type
+   TSynEditMarks = array[1..MAX_MARKS] of TSynEditMark;
+ 
+   { A list of mark objects. Each object cause a litle picture to be drawn in the gutter. }
++  // Match the RTL list index so the typed Items property hides the base property.
++  TSynEditMarkListIndex = {$IF CompilerVersion >= 37}NativeInt{$ELSE}Integer{$IFEND};
++
+   TSynEditMarkList = class(TObjectList)            // It makes more sence to derive from TObjectList,
+   protected                                        // as it automatically frees its members
+     FEdit: TCustomSynEdit;
+     FOnChange: TNotifyEvent;
+     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+-    function GetItem(Index: Integer): TSynEditMark;
+-    procedure SetItem(Index: Integer; Item: TSynEditMark);
++    function GetItem(Index: TSynEditMarkListIndex): TSynEditMark;
++    procedure SetItem(Index: TSynEditMarkListIndex; Item: TSynEditMark);
+     property OwnsObjects;                          // This is to hide the inherited property,
+   public                                           // because TSynEditMarkList always owns the marks
+     constructor Create(AOwner: TCustomSynEdit);
+@@ -310,7 +313,7 @@ type
+     procedure GetMarksForLine(line: Integer; var Marks: TSynEditMarks);
+     procedure Place(mark: TSynEditMark);
+   public
+-    property Items[Index: Integer]: TSynEditMark read GetItem write SetItem; default;
++    property Items[Index: TSynEditMarkListIndex]: TSynEditMark read GetItem write SetItem; default;
+     property Edit: TCustomSynEdit read FEdit;
+     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+   end;
+@@ -11781,12 +11784,12 @@ begin
+     FOnChange(Self);
+ end;
+ 
+-function TSynEditMarkList.GetItem(Index: Integer): TSynEditMark;
++function TSynEditMarkList.GetItem(Index: TSynEditMarkListIndex): TSynEditMark;
+ begin
+   Result := TSynEditMark(inherited GetItem(Index));
+ end;
+ 
+-procedure TSynEditMarkList.SetItem(Index: Integer; Item: TSynEditMark);
++procedure TSynEditMarkList.SetItem(Index: TSynEditMarkListIndex; Item: TSynEditMark);
+ begin
+   inherited SetItem(Index, Item);
+ end;
+diff --git a/Source/SynEditHighlighter.pas b/Source/SynEditHighlighter.pas
+index b74ebcf..c3163e1 100644
+--- a/Source/SynEditHighlighter.pas
++++ b/Source/SynEditHighlighter.pas
+@@ -244,10 +244,13 @@ type
+   TSynCustomHighlighterClass = class of TSynCustomHighlighter;
+ 
+ {$IFNDEF SYN_CPPB_1}
++  // Match the RTL list index so the typed Items property hides the base property.
++  TSynHighlighterListIndex = {$IF CompilerVersion >= 37}NativeInt{$ELSE}Integer{$IFEND};
++
+   TSynHighlighterList = class(TList)
+   private
+     FHighlighterList: TList;
+-    function GetItem(Index: Integer): TSynCustomHighlighterClass;
++    function GetItem(Index: TSynHighlighterListIndex): TSynCustomHighlighterClass;
+   public
+     constructor Create;
+     destructor Destroy; override;
+@@ -255,7 +258,7 @@ type
+     function FindByFriendlyName(FriendlyName: string): Integer;
+     function FindByName(Name: string): Integer;
+     function FindByClass(Comp: TComponent): Integer;
+-    property Items[Index: Integer]: TSynCustomHighlighterClass
++    property Items[Index: TSynHighlighterListIndex]: TSynCustomHighlighterClass
+       read GetItem; default;
+   end;
+ 
+@@ -338,7 +341,7 @@ begin
+   end;
+ end;
+ 
+-function TSynHighlighterList.GetItem(Index: Integer): TSynCustomHighlighterClass;
++function TSynHighlighterList.GetItem(Index: TSynHighlighterListIndex): TSynCustomHighlighterClass;
+ begin
+   Result := TSynCustomHighlighterClass(FHighlighterList[Index]);
+ end;

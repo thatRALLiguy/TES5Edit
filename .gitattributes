@@ -105,3 +105,6 @@ text eol=lf
 # ============
 *.pas text
 *.dfm text
+
+# Preserve dependency patch bytes, including context-line endings.
+/Tools/compatibility/*.patch -text
