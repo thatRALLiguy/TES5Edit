@@ -79,7 +79,7 @@ def main():
     results = []
     for name, expected in [*( (n, e[1]) for n, e in cases.items()),
                             ('UnresolvedReference.esm', None)]:
-        command = [str(exe), '-SF1', '-nobsa', '-l:en', f'-d:{data}', str(data / name)]
+        command = [str(exe), '-dump', '-SF1', '-nobsa', '-l:en', f'-d:{data}', str(data / name)]
         run = subprocess.run(command, cwd=output, capture_output=True, timeout=120)
         (output / (name + '.stdout.txt')).write_bytes(run.stdout)
         (output / (name + '.stderr.txt')).write_bytes(run.stderr)
@@ -87,7 +87,7 @@ def main():
         errors = run.stderr.decode('utf-8', errors='replace')
         # Assert a field-level target identity, not just a successful exit.
         reference_lines = [line for line in text.splitlines() if 'LNAM' in line]
-        passed = ('All Done.' in errors and 'Unexpected Error:' not in errors
+        passed = (run.returncode == 0 and 'All Done.' in errors and 'Unexpected Error:' not in errors
                   and len(reference_lines) == 1)
         if passed:
             if expected:

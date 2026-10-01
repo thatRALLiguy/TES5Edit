@@ -33,7 +33,7 @@ def main():
                   'truncated plugin header') for size in (1, 3, 4, 23))
     results = []
     for name, filename, mode, expected, diagnostic in cases:
-        command = [str(exe), '-SF1', '-nobsa', '-l:en', f'-d:{data}', mode, str(data / filename)]
+        command = [str(exe), '-dump', '-SF1', '-nobsa', '-l:en', f'-d:{data}', mode, str(data / filename)]
         run = subprocess.run(command, cwd=output, capture_output=True, timeout=120)
         (output / (name + '.stdout.txt')).write_bytes(run.stdout)
         (output / (name + '.stderr.txt')).write_bytes(run.stderr)

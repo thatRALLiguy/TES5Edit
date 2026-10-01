@@ -91,7 +91,7 @@ No parsing or rewriting of mod records is involved.
 `Tests/CommandLineRegression.dpr` exercises empty leading/trailing arguments,
 a switch between positional arguments, an absent switch, output clearing and
 iterator advancement. Compile the actual helper with Delphi range checks enabled
-(`dcc64 -B -$R+ Tests\CommandLineRegression.dpr`) and run the resulting executable
+(`dcc64 -B '-$R+' Tests\CommandLineRegression.dpr` in PowerShell) and run the resulting executable
 with four arguments: `"" -probe:value payload ""`. Native execution is pending;
 a source inspection is not an execution of this regression test.
 
@@ -146,3 +146,29 @@ No external database contents are bundled or automatically applied to user mods.
 - Confirm pushed commit identities and baseline preservation after final changes.
 
 Until those gates pass, these are reviewable source fixes, not a verified release.
+
+## Verification follow-up
+
+`Tests/xdump_header_sizes.py` now generates valid TES3, TES4 and Starfield controls
+and truncated headers at 1 byte, 4 bytes and one byte below each format's header
+size. Run it with the same `--exe` and fresh `--output` arguments as the other
+Python harnesses. The old 4.1.5q executable accepts the valid TES4 and Starfield
+controls. It returns zero for all nine malformed inputs, failing the new
+exit-code/diagnostic expectations. All fixture hashes remain unchanged.
+
+The old executable's valid TES3 control does not reach validation: it tries to
+load an unavailable `Morrowind.exe` internal master. That is an explicit failed
+prerequisite, not a clean TES3 check or proof of a defect in this fixture. The
+new source has embedded Morrowind hardcoded data in `wbHardcoded.dfm`; a freshly
+built binary is needed to determine its behavior. The harness retains this gate.
+
+The mixed-master harness now requires a successful process exit as well as the
+expected resolved target. All Python harnesses explicitly select `-dump`, so
+renaming a build does not accidentally select another tool mode.
+
+Build discovery checked conventional compiler directories and PATH, plus the
+signed-in user's and machine's Embarcadero BDS registry entries. No Delphi
+compiler was found. The fork's GitHub Actions runner API returned
+`total_count: 0`. Neither route currently supplies a native build environment.
+No compiler installation, license acquisition or remote machine configuration
+has been performed.
