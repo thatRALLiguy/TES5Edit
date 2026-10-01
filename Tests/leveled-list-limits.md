@@ -63,6 +63,13 @@ Executable SHA-256:
 - Modified dump: `acbe20300df521a90e1d78c0645d05ecb8f9c6f0e7b20cd6af7027b46c80b9e2`
 - Modified editor: `cd36bed8cd323e1ad5f6870206e00f350bcdb0e899c166a5d76eebb8aa81689c`
 
+The builder subsequently rebuilt both executables. Frozen copies of those final
+outputs passed the same 14 console cases, 42 editor assertions and four reopen
+checks; both repaired plugin hashes matched the first run exactly. Final hashes:
+
+- Dump: `ecae144d7b5b00a28c4dae318fe76a69218970c67e72ae41290ab6b0da0b0583`
+- Editor: `29b0ed3d63951442f41b658f8ddaadfb86ae45e9985d8c85e306a7c47c9932a2`
+
 Coverage is synthetic LVLI and FLST data with actual editor scripting and
 serialization. Other leveled-list schemas, GUI clicks, mixed multi-element
 replacement batches, Win32, Fallout modes and gameplay have not been exercised
