@@ -175,7 +175,7 @@ has been performed.
 
 ## Fork build label
 
-Our xEdit and xDump builds display `4.1.5qd_a`: `d` identifies the dwnfdrknss
+Our xEdit and xDump builds display `4.1.5rd_a`: `d` identifies the dwnfdrknss
 edition and `a` is our revision. The shared `wbBuildLabel` supplies application
 banners and cleaning reports; both Delphi projects use the same label in their
 textual Windows file/product version metadata. Numeric Windows version fields
@@ -184,8 +184,8 @@ remain 4.1.5.0. Optional edition titles and architecture suffixes are retained.
 The checked-out upstream source identifies itself internally as `4.1.5r`.
 That value remains unchanged for script compatibility and update comparisons:
 its numeric conversion supports a single-letter build suffix, so the fork label
-is deliberately separate. The requested label does not indicate a source rebase
-to the older installed 4.1.5q executable.
+is deliberately separate. The fork label matches the upstream 4.1.5r source;
+the older installed 4.1.5q executable is only a historical test reference.
 
 Delphi 13 CE installation has since started and the pinned source submodules
 have been downloaded. Native builds and verification remain pending completion

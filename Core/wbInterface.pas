@@ -68,7 +68,7 @@ var
 
 const
   // Fork display label; keep VersionString for upstream compatibility checks.
-  wbBuildLabel = '4.1.5qd_a';
+  wbBuildLabel = '4.1.5rd_a';
 
   wbWhatsNewVersion : Integer = 04010512;
   wbDeveloperMessageVersion : Integer = 04010508;

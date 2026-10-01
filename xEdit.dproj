@@ -90,7 +90,7 @@
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <VerInfo_Debug>true</VerInfo_Debug>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Keys>FileDescription=xEdit;FileVersion=4.1.5qd_a;ProductName=xEdit;ProductVersion=4.1.5qd_a</VerInfo_Keys>
+        <VerInfo_Keys>FileDescription=xEdit;FileVersion=4.1.5rd_a;ProductName=xEdit;ProductVersion=4.1.5rd_a</VerInfo_Keys>
         <VerInfo_Locale>3081</VerInfo_Locale>
         <VerInfo_MajorVer>4</VerInfo_MajorVer>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
