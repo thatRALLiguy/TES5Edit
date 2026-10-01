@@ -59,3 +59,23 @@ The deliberately broken reference must remain unresolved after the fix.
 No Delphi compiler was found on PATH, in the conventional Embarcadero program
 directories, or the checked BDS registry locations. A native build of this branch
 and rerun are still required. No updated executable or gameplay pass is claimed.
+
+## Round 2: observable validation failures (native test pending)
+
+xDump discarded the Boolean result from `CheckForErrors`; its exception handler
+also only printed a diagnostic. Both could exit successfully after failure.
+Return 1 for `-check`/`-dcr` element-check errors and 2 for caught execution
+exceptions, retaining the original diagnostic text. Ordinary non-check dumps
+retain their current behavior. This does not promise that every loader warning
+or invalid command line is covered; further review is required.
+
+`Tests/xdump_exit_codes.py` exercises a clean plugin, an unresolved reference in
+both check modes, and a missing master. The installed 4.1.5q binary returned 0
+for all four. The clean control passes, while all three failure-exit expectations
+fail. All fixture hashes remain unchanged. Native verification of this branch
+is pending. Fixture headers now include the required CNAM and INCC members so
+unrelated header errors cannot contaminate the clean control.
+
+During test development a four-byte `TES4` input was accepted by the installed
+binary. That observation requires investigation during the input-safety review;
+it is not yet attributed to a particular core implementation path.

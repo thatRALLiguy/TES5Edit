@@ -22,8 +22,10 @@ def record(signature, form_id, data, flags=0):
 
 def plugin(path, masters, flags, forms):
     header = subrecord('HEDR', struct.pack('<fII', 0.96, len(forms) + 1, 0x900))
+    header += subrecord('CNAM', b'xEdit regression fixture\0')
     for master in masters:
         header += subrecord('MAST', master.encode('ascii') + b'\0')
+    header += subrecord('INCC', struct.pack('<I', 0))
     content = b''
     for form_id, editor_id, references in forms:
         data = subrecord('EDID', editor_id.encode('ascii') + b'\0')

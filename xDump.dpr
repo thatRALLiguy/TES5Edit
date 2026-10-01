@@ -732,8 +732,10 @@ begin
     end;
   end;
 
-  if DumpCheckReport and (Error <> '') then
+  if DumpCheckReport and (Error <> '') then begin
+    ExitCode := 1;
     WriteLn(aIndent, '[ERROR: ', Error ,']');
+  end;
 
   if Supports(aElement, IwbContainer, Container) and (DumpHidden or (Pos('Hidden: ', Name)<>1)) then
     WriteContainer(Container, aIndent);
@@ -1551,6 +1553,7 @@ begin
         WriteLn(ErrOutput, '-top:N       ', 'If specified, only dump the first N records');
         WriteLn(ErrOutput, '-check       ', 'Performs "Check for Errors" instead of dumping content');
         WriteLn(ErrOutput, '-dcr         ', 'Dumps record content while performing "Check for Errors" on each element and generates a report');
+        WriteLn(ErrOutput, '             ', 'Exit codes: 1 = check errors, 2 = unexpected execution failure.');
         WriteLn(ErrOutput, '-es          ', 'Dumps size for all elements');
         WriteLn(ErrOutput, '-dh          ', 'Dumps normally hidden elements');
         WriteLn(ErrOutput, '             ', '');
@@ -1758,9 +1761,10 @@ begin
       ReportProgress('Finished loading record. Starting Dump.');
 
       if wbToolMode in [tmDump] then begin
-        if FindCmdLineSwitch('check') and not wbReportMode then
-          CheckForErrors(0, _File)
-        else begin
+        if FindCmdLineSwitch('check') and not wbReportMode then begin
+          if CheckForErrors(0, _File) then
+            ExitCode := 1;
+        end else begin
           if DontWriteReport then
             ProgressLocked := True;
           WriteContainer(_File);
@@ -1789,8 +1793,10 @@ begin
 
       ReportProgress('All Done.');
     except
-      on e: Exception do
+      on e: Exception do begin
+        ExitCode := 2;
         ReportProgress('Unexpected Error: <'+e.ClassName+': '+e.Message+'>');
+      end;
     end;
   finally
     if DebugHook <> 0 then begin
