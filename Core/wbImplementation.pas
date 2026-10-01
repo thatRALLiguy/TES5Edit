@@ -172,12 +172,34 @@ threadvar
 var
   mreNextGen: Integer;
 
+procedure wbRequireBoundedSource(const aSource: IwbElement);
+var
+  lContainer: IwbContainer;
+  lArrayDef: IwbSubRecordArrayDef;
+begin
+  if not Supports(aSource, IwbContainer, lContainer) then
+    Exit;
+
+  if Supports(aSource.Def, IwbSubRecordArrayDef, lArrayDef) then
+    if (lArrayDef.MaxCount > 0) and (lContainer.ElementCount > lArrayDef.MaxCount) then
+      raise Exception.CreateFmt('%s: %d entries exceed the maximum of %d',
+        [aSource.Path, lContainer.ElementCount, lArrayDef.MaxCount]);
+
+  for var i := 0 to Pred(lContainer.ElementCount) do
+    wbRequireBoundedSource(lContainer.Elements[i]);
+end;
+
 function wbCopyElementToFile(const aSource: IwbElement; aFile: IwbFile; aAsNew, aDeepCopy: Boolean; const aPrefixRemove, aSuffixRemove, aPrefix, aSuffix: string; aAllowOverwrite: Boolean): IwbElement;
 var
   MainRecord  : IwbMainRecord;
   Container   : IwbContainer;
   Target      : IwbElement;
 begin
+  // Reject before creating destination ancestors, allocating FormIDs or masters.
+  // Shallow recursive calls only create the ancestry needed for this source.
+  if aDeepCopy then
+    wbRequireBoundedSource(aSource);
+
   Inc(wbCopyIsRunning);
   try
     wbTick;
@@ -19437,6 +19459,9 @@ var
 begin
   wbTick;
 
+  if aDeepCopy then
+    wbRequireBoundedSource(aElement);
+
   {$IFDEF USE_CODESITE}
   Log := (laAddIfMissing in wbLoggingAreas) and wbCodeSiteLoggingEnabled;
   if Log then begin
@@ -19541,6 +19566,9 @@ begin
         if not Supports(aElement, IwbMainRecord) or Supports(Self, IwbMainRecord) then
           raise Exception.Create(aElement.Name + ' contains Reflection and can not be assigned');
 
+      // Parent AssignInternal methods can clear the target and swallow a
+      // child's failed Assign result. Validate descendants before any mutation.
+      wbRequireBoundedSource(aElement);
       Result := AssignInternal(aIndex, aElement, aOnlySK);
     except
       on E: Exception do begin
