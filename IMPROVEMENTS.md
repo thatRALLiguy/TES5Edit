@@ -190,3 +190,45 @@ the older installed 4.1.5q executable is only a historical test reference.
 Delphi 13 CE installation has since started and the pinned source submodules
 have been downloaded. Native builds and verification remain pending completion
 of IDE setup; no executable carrying this label has yet been verified.
+
+## Native verification: October 1, 2026
+
+Fetched official `TES5Edit/TES5Edit` branch `dev-4.1.6` again. Its tip remains
+`9fb016884bec138ea6c7b872cec831537d464c3e`, identical to our preserved base;
+there are no upstream commits to merge.
+
+Delphi 13 CE successfully compiled xDump from `a00f514` using Win64 LiteDebug
+in the IDE (zero errors, six warnings, five hints). Windows file/product strings
+both read `4.1.5rd_a`. The executable SHA-256 is
+`00fc509998a2ca3bd837e508d36c8d7ab1aadd57bd248accc4643fbde6d39ba4`.
+
+All three native fixture suites passed on that binary:
+
+- Mixed Starfield master namespaces: 4/4, including the unresolved control.
+- Validation/execution exit codes: 8/8.
+- TES3/TES4/SF1 valid and truncated headers: 12/12, including the valid TES3
+  control that could not run on the older installed executable.
+
+Each suite verified that fixture hashes were unchanged. Local reports and full
+stdout/stderr logs are under `audits/xedit-improvements-2026-10-01` in the parent
+workspace, in `changed-master-ids`, `changed-exit-codes`, and
+`changed-header-sizes`. A binary snapshot is in `changed-build-a00f514`.
+These results verify the changed xDump on synthetic inputs; baseline-source
+comparison, command-line range checks, and GUI/script checks are still open.
+
+The editor's initial compile stopped at missing `jcld29win64.inc`. Both JCL
+configuration files were then copied from `jcl.template.inc`, as documented in
+the upstream README. The pinned JEDI include intentionally treats newer
+compilers as its latest known compiler. No submodule source was changed.
+
+After that setup, xEdit Win64 LiteDebug compilation failed in the pinned
+SynEdit dependency. The IDE reports four errors, 42 warnings and 32 hints;
+visible diagnostics include `E2197 Constant object cannot be passed as var
+parameter` in `SynHighlighterMulti.pas` (including line 828), followed by
+`F2063 Could not compile used unit 'SynHighlighterMulti.pas'` from
+`SynEditMiscProcs.pas:2707`. No successful xEdit executable was produced.
+Work stopped at this compatibility failure, in accordance with the user's
+instruction to report genuine issues before continuing. It has not yet been
+established whether the recommended Delphi 12 compiler accepts this dependency.
+The missing VirtualEditTree designer component also prevented opening the main
+form visually; that operation was cancelled without accepting component removal.
