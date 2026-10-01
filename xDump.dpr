@@ -1261,7 +1261,9 @@ begin
      if SourceName = 'Plugins' then
        SourceName := '';
 
-     wbApplicationTitle := wbAppName + wbToolName + SourceName +  ' ' + VersionString;
+     wbApplicationTitle := wbAppName + wbToolName + SourceName +  ' ' + wbBuildLabel;
+     if VersionString.Title <> '' then
+       wbApplicationTitle := wbApplicationTitle + ' ' + VersionString.Title;
      {$IFDEF WIN64}
      wbApplicationTitle := wbApplicationTitle + ' x64';
      {$ENDIF WIN64}
