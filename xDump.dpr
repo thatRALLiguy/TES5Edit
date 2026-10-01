@@ -1164,6 +1164,9 @@ begin
         end;
         gmSF1: begin
           wbGameName           := 'Starfield';
+          // Starfield stores full, small and medium master indices separately.
+          // Match xEdit before definitions or files interpret any FormIDs.
+          wbComplexFileFileID  := True;
           wbCreateContainedIn  := False;
           wbVWDAsQuestChildren := True;
           case wbToolSource of
