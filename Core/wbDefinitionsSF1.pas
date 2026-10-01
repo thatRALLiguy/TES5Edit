@@ -14004,7 +14004,7 @@ begin
         wbConditions
       ]).SetSummaryMemberMaxDepth(0, 1)
         .IncludeFlag(dfCollapsed, wbCollapseLeveledItems)
-    ).SetCountPath(LLCT),
+    ).SetMaxCount(255).SetCountPath(LLCT),
     wbFilterKeywordChances,
     wbGenericModel(True)
   ]);
@@ -14063,7 +14063,7 @@ begin
         wbConditions
       ]).SetSummaryMemberMaxDepth(0, 1)
         .IncludeFlag(dfCollapsed, wbCollapseLeveledItems)
-    ).SetCountPath(LLCT),
+    ).SetMaxCount(255).SetCountPath(LLCT),
     wbFilterKeywordChances,
     wbFormIDCk(LVSG, 'Epic Loot Chance', [GLOB]),
     wbByteColors(LIMC, 'Marker Color'),
@@ -14109,7 +14109,7 @@ begin
         wbConditions
       ]).SetSummaryMemberMaxDepth(0, 1)
         .IncludeFlag(dfCollapsed, wbCollapseLeveledItems)
-    ).SetCountPath(LLCT),
+    ).SetMaxCount(255).SetCountPath(LLCT),
     wbFilterKeywordChances,
     wbLStringKC(ONAM, 'Override Name', 0, cpTranslate),
     wbGenericModel(True)
@@ -14150,7 +14150,7 @@ begin
         wbConditions.IncludeFlag(dfSummaryMembersNoName)
       ]).SetSummaryMemberMaxDepth(0, 1)
         .IncludeFlag(dfCollapsed, wbCollapseLeveledItems)
-    ).SetCountPath(LLCT),
+    ).SetMaxCount(255).SetCountPath(LLCT),
     //wbFilterKeywordChances,
     //wbLStringKC(ONAM, 'Override Name', 0, cpTranslate)
     wbGenericModel(True),
@@ -14200,7 +14200,7 @@ begin
         wbConditions
       ]).SetSummaryMemberMaxDepth(0, 1)
         .IncludeFlag(dfCollapsed, wbCollapseLeveledItems)
-    ).SetCountPath(LLCT)
+    ).SetMaxCount(255).SetCountPath(LLCT)
   ]);
 
   (* still exists in game code, but not in Starfield.esm *)
@@ -14252,7 +14252,7 @@ begin
         wbLeveledListEntry('Spell', [LVSP, SPEL])
       ]).SetSummaryMemberMaxDepth(0, 1)
         .IncludeFlag(dfCollapsed, wbCollapseLeveledItems)
-    ).SetCountPath(LLCT)
+    ).SetMaxCount(255).SetCountPath(LLCT)
   ]);
 
   {subrecords checked against Starfield.esm}

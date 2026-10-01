@@ -2832,6 +2832,8 @@ type
     function GetSorted(const aContainer: IwbContainer): Boolean;
     function GetCountPaths: TArray<string>;
     function GetCount: Integer;
+    function GetMaxCount: Integer;
+    function SetMaxCount(aValue: Integer): IwbSubRecordArrayDef;
 
     function SetCountPath(const aValue: string): IwbSubRecordArrayDef; overload;
     function SetCountPath(const aValues: array of string): IwbSubRecordArrayDef; overload;
@@ -2842,6 +2844,7 @@ type
 
     property Element: IwbRecordMemberDef read GetElement;
     property Count: Integer read GetCount; //fixed number of elementes if > 0
+    property MaxCount: Integer read GetMaxCount; //0 means unlimited; never truncates loaded data
     property Sorted[const aContainer: IwbContainer]: Boolean read GetSorted;
     property CountPaths: TArray<string> read GetCountPaths;
     property DefaultEditValues: TwbStringArray read GetDefaultEditValues;
@@ -6046,6 +6049,7 @@ type
   private
     sraElement           : IwbRecordMemberDef;
     sraCount             : Integer;
+    sraMaxCount          : Integer;
     sraSorted            : Boolean;
     sraIsSorted          : TwbIsSortedCallback;
     sraDefaultEditValues : TwbStringArray;
@@ -6093,6 +6097,8 @@ type
     function GetSorted(const aContainer: IwbContainer): Boolean;
     function GetCountPaths: TArray<string>;
     function GetCount: Integer;
+    function GetMaxCount: Integer;
+    function SetMaxCount(aValue: Integer): IwbSubRecordArrayDef;
 
     function SetDefaultEditValues(const aValues: array of string): IwbSubRecordArrayDef;
     function GetDefaultEditValues: TwbStringArray;
@@ -11391,6 +11397,7 @@ begin
     Self.sraDefaultEditValues := sraDefaultEditValues;
     Self.sraCountPaths := Copy(sraCountPaths);
     Self.sraIsSorted := sraIsSorted;
+    Self.sraMaxCount := sraMaxCount;
   end;
 end;
 
@@ -11472,6 +11479,21 @@ end;
 function TwbSubRecordArrayDef.GetCount: Integer;
 begin
   Result := sraCount;
+end;
+
+function TwbSubRecordArrayDef.GetMaxCount: Integer;
+begin
+  Result := sraMaxCount;
+end;
+
+function TwbSubRecordArrayDef.SetMaxCount(aValue: Integer): IwbSubRecordArrayDef;
+begin
+  if aValue < 0 then
+    raise EArgumentOutOfRangeException.Create('Array maximum count must not be negative');
+  if defIsLocked then
+    Exit(TwbSubRecordArrayDef(Duplicate).SetMaxCount(aValue));
+  sraMaxCount := aValue;
+  Result := Self;
 end;
 
 function TwbSubRecordArrayDef.GetCountPaths: TArray<string>;
