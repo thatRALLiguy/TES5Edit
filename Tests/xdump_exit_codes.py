@@ -20,6 +20,8 @@ def main():
     generate(data)
     plugin(data / 'MissingMaster.esm', ['Absent.esm'], 1,
            [(0x01000800, 'MissingMasterFixture', [])])
+    for size in (1, 3, 4, 23):
+        (data / f'Truncated{size}.esm').write_bytes((b'TES4' + bytes(20))[:size])
     before = hashes(data)
     cases = [
         ('valid-check', 'Starfield.esm', '-check', 0, None),
@@ -27,6 +29,8 @@ def main():
         ('invalid-report', 'UnresolvedReference.esm', '-dcr', 1, 'could not be resolved'),
         ('missing-master', 'MissingMaster.esm', '-check', 2, 'unexpected error:'),
     ]
+    cases.extend((f'truncated-{size}', f'Truncated{size}.esm', '-check', 2,
+                  'truncated plugin header') for size in (1, 3, 4, 23))
     results = []
     for name, filename, mode, expected, diagnostic in cases:
         command = [str(exe), '-SF1', '-nobsa', '-l:en', f'-d:{data}', mode, str(data / filename)]

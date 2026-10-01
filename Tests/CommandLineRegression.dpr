@@ -34,6 +34,9 @@ begin
     Require(wbFindCmdLineParam(Index, Value), 'Trailing empty argument lost');
     Require((Value = '') and (Index = 5), 'Wrong trailing empty result');
     Require(not wbFindCmdLineParam(Index, Value), 'Unexpected extra argument');
+    Index := 1;
+    Require(not wbFindCmdLineParam(Index, [], Value), 'Empty switch-character set must skip all');
+    Require((Value = '') and (Index = 5), 'Wrong empty-set iteration result');
     WriteLn('PASS: empty arguments and switch/positional iteration');
   except
     on E: Exception do begin

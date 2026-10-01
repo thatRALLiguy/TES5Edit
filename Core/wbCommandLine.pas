@@ -78,12 +78,16 @@ begin
   aValue := '';
   for i := aStartIndex to ParamCount do begin
     s := ParamStr(i);
+    if aChars = [] then begin
+      Inc(aStartIndex);
+      Continue;
+    end;
     if s = '' then begin
       // An explicitly empty positional argument is still an argument.
       aStartIndex := i + 1;
       Exit(True);
     end;
-    if (aChars = []) or CharInSet(s[1], aChars) then // skipped
+    if CharInSet(s[1], aChars) then // skipped
       Inc(aStartIndex)
     else begin
       aValue := ParamStr(i);

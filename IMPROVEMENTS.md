@@ -107,3 +107,42 @@ Diff review confirms one redundant call removed from each implementation; no
 filters, record changes or skipped subtrees were introduced. This saves one
 validation call per erroneous element in these two paths. No elapsed-time
 speedup is claimed. GUI/script runtime verification remains pending.
+
+## Round 5: truncated-header guard and aggregate review (in progress)
+
+The installed binary accepted a four-byte TES4 file as a completed load. Source
+review found that `TwbFile.Scan` passed the mapped file directly to the first
+record constructor with no minimum main-record-header size check. Reject files
+shorter than the selected game's header before constructing the first record.
+This uses existing definitions (16 bytes TES3, 20 TES4, 24 later games), not a
+Starfield-only hard-coded size. `TwbFileSource` has its own Scan override; the
+new guard is in the plugin scanner, not the save scanner.
+
+The native exit-code harness now includes 1-, 3-, 4- and 23-byte malformed
+Starfield headers alongside the clean fixture. This guard is only a minimum
+file-header bound check; it is not a complete malicious-file parser audit and
+does not establish bounds coverage for every subsequent record/subrecord.
+Native test results, cross-game checks and the full aggregate review are pending.
+
+Aggregate source review caught an edge case in round 3: the positional overload
+historically skips all arguments when given an empty switch-character set.
+Preserve that behavior explicitly, including empty arguments, and cover it in
+the native command-line regression harness.
+
+The online [LOOT Starfield masterlist](https://github.com/loot/starfield/blob/v0.29/masterlist.yaml)
+was also inspected as a compatibility-data reference. It is not a binary-format
+schema and does not justify adding automatic plugin edits or converting scales.
+No external database contents are bundled or automatically applied to user mods.
+
+## Completion gates still open
+
+- Build baseline and changed xDump and xEdit with Delphi and pinned submodules.
+- Run both Python native harnesses on the changed xDump; compare against the
+  preserved baseline build, in addition to the older installed-binary evidence.
+- Run the Delphi command-line regression with range checking enabled.
+- Exercise valid/truncated inputs for TES3 and TES4 as well as Starfield to
+  verify the header-size guard, and GUI/script error reporting on audit copies.
+- Check complete logs and input preservation; investigate any new failures.
+- Confirm pushed commit identities and baseline preservation after final changes.
+
+Until those gates pass, these are reviewable source fixes, not a verified release.
