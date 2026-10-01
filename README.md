@@ -1,8 +1,25 @@
-# xEdit
+# xEdit - dwnfdrknss edition
 
-xEdit by ElminsterAU. The editing and conflict-resolution tool for Bethesda game plugins — Oblivion through Starfield.
+An independent fork of [xEdit](https://github.com/TES5Edit/TES5Edit), the Bethesda
+plugin editor and conflict-resolution tool created by ElminsterAU and developed
+by the upstream contributors credited below.
+
+We are updating and customizing our own modding tools, with **Starfield as the
+current focus**: investigating and fixing plugin bugs, testing changes, creating
+new mods, and supporting game- and save-related troubleshooting. Skyrim and
+Fallout 4 remain part of the broader toolset and are areas we may revisit as
+this work develops.
+
+This is an ongoing development fork. xEdit works on game plugins; direct
+save-file repair requires separate tools.
 
 ## Maintainers and Contributors
+
+**Fork maintainer and contributor:** [dwnfdrknss (@thatRALLiguy)](https://github.com/thatRALLiguy)
+
+Project direction, custom tool development, bug investigation, and mod testing.
+
+The following credits recognize the original xEdit project and its contributors.
 
 **Author and upstream maintainer:** [ElminsterAU](https://github.com/ElminsterAU) (since 2006)
 
@@ -18,11 +35,14 @@ See the [contributors graph](https://github.com/TES5Edit/TES5Edit/graphs/contrib
 
 ## GitHub Issue Tracker
 
-Our [GitHub issue tracker](https://github.com/TES5Edit/TES5Edit/issues) offers a place to submit and discuss feature requests and bug reports. When using it, please ensure that any criticism you provide is constructive.
+The upstream [GitHub issue tracker](https://github.com/TES5Edit/TES5Edit/issues) offers a place to submit and discuss feature requests and bug reports. When using it, please ensure that any criticism you provide is constructive.
 
 Please do not use the tracker for general help and support on how to use xEdit.
 
 ## Releases
+
+The links below are upstream xEdit releases. Custom work in this fork is
+developed separately; these links do not distribute the dwnfdrknss edition.
 
 The most recent builds are available through the [xEdit Discord](https://discord.com/invite/5t8RnNQ) in the `#xedit-builds` channel. The archive provided here is generic and works with all current game modes. See the [xEdit Versions](#xedit-versions) table in this document on how to properly use it.
 
