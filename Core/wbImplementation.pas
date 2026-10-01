@@ -2004,6 +2004,8 @@ type
     arcSorted      : Boolean;
     arcSortInvalid : Boolean;
     arcNameGen     : Integer;
+    function AssignmentCount(aIndex: Integer; const aElement: IwbElement): Integer;
+    procedure RequireCount(aCount: Integer);
   protected
     constructor Create(const aOwner     : IwbContainer;
                        const aContainer : IwbContainer;
@@ -21175,6 +21177,44 @@ end;
 
 { TwbSubRecordArray }
 
+function TwbSubRecordArray.AssignmentCount(aIndex: Integer; const aElement: IwbElement): Integer;
+
+  procedure CountAssignment(const aSource: IwbElement; var aCount: Integer; var aEmpty: Boolean);
+  var
+    lMultiple: IwbMultipleElements;
+    lContainer: IwbContainer;
+  begin
+    if Supports(aSource, IwbMultipleElements, lMultiple) then begin
+      for var i := 0 to Pred(lMultiple.ElementCount) do
+        CountAssignment(lMultiple.Elements[i], aCount, aEmpty);
+    end else if Assigned(aSource) and (aIndex = wbAssignThis) and
+      arcDef.CanAssign(Self, aIndex, aSource.Def) and Supports(aSource, IwbContainer, lContainer) then begin
+      aCount := lContainer.ElementCount;
+      aEmpty := False;
+    end else if ((aIndex >= 0) and (not Assigned(aSource) or
+      arcDef.Element.CanAssign(Self, wbAssignThis, aSource.Def))) or
+      (Assigned(aSource) and (aIndex = wbAssignThis) and
+      arcDef.Element.CanAssign(Self, aIndex, aSource.Def)) then begin
+      if aEmpty and Assigned(aSource) then
+        aEmpty := False
+      else
+        Inc(aCount);
+    end;
+  end;
+
+begin
+  Result := GetElementCount;
+  var lEmpty := csAsCreatedEmpty in cntStates;
+  CountAssignment(aElement, Result, lEmpty);
+end;
+
+procedure TwbSubRecordArray.RequireCount(aCount: Integer);
+begin
+  if (arcDef.MaxCount > 0) and (aCount > arcDef.MaxCount) then
+    raise Exception.CreateFmt('%s: %d entries exceed the maximum of %d',
+      [GetPath, aCount, arcDef.MaxCount]);
+end;
+
 function TwbSubRecordArray.Add(const aName: string; aSilent: Boolean): IwbElement;
 begin
   Result := Assign(StrToIntDef(aName, wbAssignAdd), nil, False);
@@ -21205,6 +21245,9 @@ begin
       Exit;
     end;
   end;
+
+  if not (csAsCreatedEmpty in cntStates) then
+    RequireCount(GetElementCount + 1);
 
   if (csAsCreatedEmpty in cntStates) then begin
     SetModified(True);
@@ -21250,6 +21293,12 @@ begin
 
   SelfRef := Self as IwbContainerElementRef;
   DoInit(True);
+
+  // Check before clearing/replacing anything, including a multi-element paste.
+  // Parsing uses DoProcess, so malformed input remains fully inspectable.
+  if (arcDef.MaxCount > 0) and not (aOnlySK and Assigned(aElement) and (aIndex = wbAssignThis) and
+    arcDef.CanAssign(Self, aIndex, aElement.Def)) then
+    RequireCount(AssignmentCount(aIndex, aElement));
 
   var lMultipleElements: IwbMultipleElements;
   if  Supports(aElement, IwbMultipleElements, lMultipleElements) then begin
@@ -21393,6 +21442,9 @@ begin
       Exit;
 
   if aCheckDontShow and GetDontShow then
+    Exit;
+
+  if (arcDef.MaxCount > 0) and (AssignmentCount(aIndex, aElement) > arcDef.MaxCount) then
     Exit;
 
   if not Assigned(aElement) then begin
@@ -21591,6 +21643,12 @@ begin
   DoInit(False);
 
   arcDef.ToString(Result, Self, ctCheck);
+  if (arcDef.MaxCount > 0) and (GetElementCount > arcDef.MaxCount) then begin
+    if Result <> '' then
+      Result := Result + '; ';
+    Result := Result + Format('%d entries exceed the maximum of %d',
+      [GetElementCount, arcDef.MaxCount]);
+  end;
 end;
 
 function TwbSubRecordArray.GetDef: IwbNamedDef;
@@ -21719,6 +21777,11 @@ var
   SelfRef    : IwbContainerElementRef;
 begin
   SelfRef := Self;
+
+  // Keep an already invalid file's count unchanged until enough entries have
+  // been removed. Never silently wrap the count or truncate loaded entries.
+  if (arcDef.MaxCount > 0) and (GetElementCount > arcDef.MaxCount) then
+    Exit;
 
   for var lCountPath in arcDef.CountPaths do begin
     if lCountPath = '' then

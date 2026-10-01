@@ -8030,7 +8030,7 @@ begin
         wbCOED
       ]).SetSummaryMemberMaxDepth(0, 1)
         .IncludeFlag(dfCollapsed, wbCollapseLeveledItems)
-    ).SetCountPath(LLCT),
+    ).SetMaxCount(255).SetCountPath(LLCT),
     wbGenericModel
   ]);
 
@@ -8052,7 +8052,7 @@ begin
         wbCOED
       ]).SetSummaryMemberMaxDepth(0, 1)
         .IncludeFlag(dfCollapsed, wbCollapseLeveledItems)
-    ).SetCountPath(LLCT)
+    ).SetMaxCount(255).SetCountPath(LLCT)
   ]);
 
    wbRecord(LVSP, 'Leveled Spell', [
@@ -8070,7 +8070,7 @@ begin
         wbLeveledListEntry('Spell', [LVSP, SPEL])
       ]).SetSummaryMemberMaxDepth(0, 1)
         .IncludeFlag(dfCollapsed, wbCollapseLeveledItems)
-    ).SetCountPath(LLCT)
+    ).SetMaxCount(255).SetCountPath(LLCT)
   ]);
 
   wbRecord(MGEF, 'Magic Effect', [
