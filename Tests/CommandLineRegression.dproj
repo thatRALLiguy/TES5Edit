@@ -1,0 +1,21 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{90B74CAE-EF87-4C6D-A3CF-6F6A99863A9A}</ProjectGuid>
+    <Base>True</Base>
+    <ProjectVersion>20.3</ProjectVersion>
+    <MainSource>CommandLineRegression.dpr</MainSource>
+    <ProjectName>CommandLineRegression</ProjectName>
+    <Config Condition="'$(Config)'==''">Debug</Config>
+    <Platform Condition="'$(Platform)'==''">Win64</Platform>
+    <AppType>Console</AppType>
+    <TargetedPlatforms>3</TargetedPlatforms>
+    <DCC_ExeOutput>..\Build\Tests\$(Platform)</DCC_ExeOutput>
+    <DCC_DcuOutput>..\Temp\Tests\CommandLineRegression\$(Platform)</DCC_DcuOutput>
+    <DCC_UnitSearchPath>..\External\delphi-detours-library\Source;..\External\Diff;..\External\DWScript\Source;..\External\FileContainer;..\External\ImagingLib\Source\;..\External\ImagingLib\Source\zlib;..\External\jcl\jcl\source\include\jedi;..\External\jcl\jcl\source\include;..\External\jcl\jcl\source\common;..\External\jcl\jcl\source\vcl;..\External\jcl\jcl\source\windows;..\External\JsonDataObjects\Source;..\External\jvcl\jvcl\common;..\External\jvcl\jvcl\resources;..\External\jvcl\jvcl\run;..\External\libdeflate-pas;..\External\lz4-delphi;..\External\SynEdit\Source;..\External\TOM2;..\External\vcl-styles-utils\Common;..\External\VirtualTrees\Source;..\Core;..\xEdit;..\xEdit\JvI;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+    <DCC_Namespace>System;System.Win;Xml;Data;Datasnap;Web;Soap;Winapi;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
+    <DCC_RangeChecking>true</DCC_RangeChecking>
+    <DCC_OverflowChecking>true</DCC_OverflowChecking>
+  </PropertyGroup>
+  <ItemGroup><DelphiCompile Include="$(MainSource)"><MainSource>MainSource</MainSource></DelphiCompile></ItemGroup>
+  <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" />
+</Project>

@@ -1,0 +1,43 @@
+diff --git a/Source/ImagingIO.pas b/Source/ImagingIO.pas
+index 9d79424..2399583 100644
+--- a/Source/ImagingIO.pas
++++ b/Source/ImagingIO.pas
+@@ -54,9 +54,6 @@ type
+   end;
+ 
+   TImagingIOStream = class(TStream)
+-  private
+-    FIO: TIOFunctions;
+-    FHandle: TImagingHandle;
+   public
+     constructor Create(const IOFunctions: TIOFunctions; Handle: TImagingHandle);
+   end;
+diff --git a/Source/ImagingTarga.pas b/Source/ImagingTarga.pas
+index e491bd2..10fed4f 100644
+--- a/Source/ImagingTarga.pas
++++ b/Source/ImagingTarga.pas
+@@ -169,7 +169,7 @@ var
+         end;
+       end;
+       // set position in source to real end of compressed data
+-      Seek(Handle, -(BufSize - (PtrUInt(Src) - PtrUInt(Buffer))),
++      Seek(Handle, -(BufSize - (PtrInt(Src) - PtrInt(Buffer))),
+         smFromCurrent);
+       FreeMem(Buffer);
+     end;
+diff --git a/Source/ZLib/iminfcodes.pas b/Source/ZLib/iminfcodes.pas
+index 0c1de54..089daf7 100644
+--- a/Source/ZLib/iminfcodes.pas
++++ b/Source/ZLib/iminfcodes.pas
+@@ -559,8 +559,10 @@ begin
+       exit;
+     end;
+   end;
+-{NEED_DUMMY_RETURN - Delphi2+ dumb compilers complain without this }
++{$IFNDEF CONDITIONALEXPRESSIONS}
++{ Older compilers cannot infer that every case exits. }
+   inflate_codes := Z_STREAM_ERROR;
++{$ENDIF}
+ end;
+ 
+ 

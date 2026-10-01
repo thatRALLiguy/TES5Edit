@@ -20175,7 +20175,9 @@ end;
 function TwbElement.GetElementType: TwbElementType;
 begin
   Assert(False, 'This method is abstract');
+  {$IFOPT C-}
   Result := TwbElementType(-1);
+  {$ENDIF}
 end;
 
 function TwbElement.GetFile: IwbFile;

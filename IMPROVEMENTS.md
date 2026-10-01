@@ -232,3 +232,68 @@ instruction to report genuine issues before continuing. It has not yet been
 established whether the recommended Delphi 12 compiler accepts this dependency.
 The missing VirtualEditTree designer component also prevented opening the main
 form visually; that operation was cancelled without accepting component removal.
+
+## Compiler cleanup follow-up: October 1, 2026
+
+The subsequent Delphi 13 compatibility work produced a successful full Win64
+LiteDebug editor build. Its saved compiler report is
+`audits/xedit-improvements-2026-10-01/delphi13-full-build-clean.txt` in the
+parent workspace. This supersedes the initial compiler failure above; runtime
+and GUI validation remain separate gates.
+
+`Tests/DelphiCompatibilityRegression.dpr` now imports both `System.Classes`
+and `System.Contnrs`. Delphi needs both units to expand `TObjectList.Add`
+inline. No diagnostic suppression was added to this test. A full Win64 Base
+rebuild completed with 357,048 lines, zero errors, zero warnings and zero hints.
+The executable SHA-256 is
+`4861c9ecc0ec7c2f12333f11a3f6c896467ba0adb183e8df1e1fbf16818917a4`.
+
+Two test setup problems were also corrected: registered interpreter adapters
+provide SysUtils routines directly, so the script must not request an absent
+SysUtils source unit; the legacy DOS timestamp expectation now uses native
+`FileGetDate`, matching Windows FindFirst conversion rather than assuming
+`DateTimeToFileDate(TimeStamp)` produces an identical integer.
+
+The executable still fails with `EInvalidPointer: Invalid pointer operation`
+during the search-record test. The test includes a record copy containing
+managed fields; the precise failing operation and whether the issue predates
+the compatibility patches have not yet been isolated. This is an unresolved
+runtime failure, not a successful regression pass. The later typed-list test
+was not reached. No production change was made in response to this failure.
+
+## Local official-versus-fork comparison: October 1, 2026
+
+Publication is held at the user's request pending local verification. Compared
+isolated copies of the desktop official 4.1.5q package with our 4.1.5rd_a editor
+and xDump. Detailed results, executable SHA-256 values, scripts, input hashes
+and logs are retained in the parent workspace at
+`audits/xedit-desktop-comparison-2026-10-01/REPORT.md`.
+
+The fork xDump meets all 24 targeted fixture expectations; official q meets
+4/24. These cover mixed master namespaces, error exit codes and header sizes,
+not overall product quality. The official valid TES3 control fails while trying
+to load Morrowind.exe in the isolated setup; do not interpret that control as
+proof of faulty valid-header parsing.
+
+Actual editor SF1Script runs resolve all three full/small/medium reference
+targets correctly in **both** builds. The official dump-path mixed-master
+failure therefore does not establish a matching editor failure. Ordinary
+FindFirst, legacy Time read/write, FindClose and interpreter cleanup pass in
+both. The fork's modern TimeStamp accessor passes its separate scenario.
+
+The search-record-copy scenario remains a release blocker: our actual editor
+logs EInvalidPointer at script line 26 after the `after copy` stage; official q
+becomes unresponsive after the same final stage and reaches the runner timeout.
+The latter includes UI startup time and is not a precise script-duration
+measurement. The fork exits zero after manual closure despite the failed script.
+The comparison establishes that both fail this scenario, not that their causes
+are identical or that a particular compiler is responsible. The suspected
+managed-record copy/ownership issue still needs isolation and repair.
+
+All tested synthetic plugins and all original/copied executable hashes remain
+unchanged. No installed game plugins or saves were used. No production source
+was changed during this comparison. Normal editor editing/save/reopen checks,
+representative workflow scripts, and relevant user gameplay validation remain
+open; the release is not approved by these synthetic checks. The user's
+standing instruction is to verify locally and explicitly request any remaining
+manual checks before publication, even if a later release request omits them.

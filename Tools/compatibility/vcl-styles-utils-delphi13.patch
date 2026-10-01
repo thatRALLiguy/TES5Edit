@@ -1,0 +1,156 @@
+diff --git a/Common/Vcl.Styles.Ext.pas b/Common/Vcl.Styles.Ext.pas
+index bfdbf79..a5a3f1a 100644
+--- a/Common/Vcl.Styles.Ext.pas
++++ b/Common/Vcl.Styles.Ext.pas
+@@ -241,6 +241,7 @@ type
+ 
+ implementation
+ 
++
+ uses
+   System.Rtti,
+   System.Types,
+@@ -272,6 +273,39 @@ uses
+ {$I '..\source\vcl\StyleAPI.inc'}
+ {$IFEND}
+ 
++// Use the corrected RTL names, with aliases for older Delphi releases.
++  {$IF not Declared(ktfCategoryButtonsCategoryNormal)}
++  const ktfCategoryButtonsCategoryNormal = ktfCatgeoryButtonsCategoryNormal;
++  {$IFEND}
++  {$IF not Declared(ktfCategoryButtonsCategorySelected)}
++  const ktfCategoryButtonsCategorySelected = ktfCatgeoryButtonsCategorySelected;
++  {$IFEND}
++  {$IF not Declared(ktfCategoryButtonsHot)}
++  const ktfCategoryButtonsHot = ktfCatgeoryButtonsHot;
++  {$IFEND}
++  {$IF not Declared(ktfCategoryButtonsNormal)}
++  const ktfCategoryButtonsNormal = ktfCatgeoryButtonsNormal;
++  {$IFEND}
++  {$IF not Declared(ktfCategoryButtonsSelected)}
++  const ktfCategoryButtonsSelected = ktfCatgeoryButtonsSelected;
++  {$IFEND}
++  {$IF not Declared(sfCategoryButtonsCategoryNormal)}
++  const sfCategoryButtonsCategoryNormal = sfCatgeoryButtonsCategoryNormal;
++  {$IFEND}
++  {$IF not Declared(sfCategoryButtonsCategorySelected)}
++  const sfCategoryButtonsCategorySelected = sfCatgeoryButtonsCategorySelected;
++  {$IFEND}
++  {$IF not Declared(sfCategoryButtonsHot)}
++  const sfCategoryButtonsHot = sfCatgeoryButtonsHot;
++  {$IFEND}
++  {$IF not Declared(sfCategoryButtonsNormal)}
++  const sfCategoryButtonsNormal = sfCatgeoryButtonsNormal;
++  {$IFEND}
++  {$IF not Declared(sfCategoryButtonsSelected)}
++  const sfCategoryButtonsSelected = sfCatgeoryButtonsSelected;
++  {$IFEND}
++
++
+ type
+   TCustomControlClass = class(TCustomControl);
+ 
+@@ -412,11 +446,13 @@ begin
+     006CD071 07               pop es  006CD076 FFFF             db $ff $ff
+   }
+   // Use the address of the Self.Flags property to calculate the offset of the FRegisteredStyles
++{$IF CompilerVersion < 35}
+ {$IFDEF CPUX64}
+   p := Pointer(PByte(@Self.Flags) + 8);
+ {$ELSE}
+   p := Pointer(PByte(@Self.Flags) + 4);
+ {$ENDIF CPUX64}
++{$IFEND}
+ 
+ {$IF (CompilerVersion >= 35)}  //Alexandria.
+   with Self do
+@@ -865,21 +901,21 @@ begin
+     sfCategoryPanelGroupHeaderNormal:
+       if TseStyle(Source).Fonts[ktfCategoryPanelGroupHeaderNormal] <> NewFont then
+         TseStyle(Source).Fonts[ktfCategoryPanelGroupHeaderNormal] := NewFont;
+-    sfCatgeoryButtonsCategoryNormal:
+-      if TseStyle(Source).Fonts[ktfCatgeoryButtonsCategoryNormal] <> NewFont then
+-        TseStyle(Source).Fonts[ktfCatgeoryButtonsCategoryNormal] := NewFont;
+-    sfCatgeoryButtonsCategorySelected:
+-      if TseStyle(Source).Fonts[ktfCatgeoryButtonsCategorySelected] <> NewFont then
+-        TseStyle(Source).Fonts[ktfCatgeoryButtonsCategorySelected] := NewFont;
+-    sfCatgeoryButtonsHot:
+-      if TseStyle(Source).Fonts[ktfCatgeoryButtonsHot] <> NewFont then
+-        TseStyle(Source).Fonts[ktfCatgeoryButtonsHot] := NewFont;
+-    sfCatgeoryButtonsNormal:
+-      if TseStyle(Source).Fonts[ktfCatgeoryButtonsNormal] <> NewFont then
+-        TseStyle(Source).Fonts[ktfCatgeoryButtonsNormal] := NewFont;
+-    sfCatgeoryButtonsSelected:
+-      if TseStyle(Source).Fonts[ktfCatgeoryButtonsSelected] <> NewFont then
+-        TseStyle(Source).Fonts[ktfCatgeoryButtonsSelected] := NewFont;
++    sfCategoryButtonsCategoryNormal:
++      if TseStyle(Source).Fonts[ktfCategoryButtonsCategoryNormal] <> NewFont then
++        TseStyle(Source).Fonts[ktfCategoryButtonsCategoryNormal] := NewFont;
++    sfCategoryButtonsCategorySelected:
++      if TseStyle(Source).Fonts[ktfCategoryButtonsCategorySelected] <> NewFont then
++        TseStyle(Source).Fonts[ktfCategoryButtonsCategorySelected] := NewFont;
++    sfCategoryButtonsHot:
++      if TseStyle(Source).Fonts[ktfCategoryButtonsHot] <> NewFont then
++        TseStyle(Source).Fonts[ktfCategoryButtonsHot] := NewFont;
++    sfCategoryButtonsNormal:
++      if TseStyle(Source).Fonts[ktfCategoryButtonsNormal] <> NewFont then
++        TseStyle(Source).Fonts[ktfCategoryButtonsNormal] := NewFont;
++    sfCategoryButtonsSelected:
++      if TseStyle(Source).Fonts[ktfCategoryButtonsSelected] <> NewFont then
++        TseStyle(Source).Fonts[ktfCategoryButtonsSelected] := NewFont;
+     sfCheckBoxTextDisabled:
+       if TseStyle(Source).Fonts[ktfCheckBoxTextDisabled] <> NewFont then
+         TseStyle(Source).Fonts[ktfCheckBoxTextDisabled] := NewFont;
+@@ -1126,21 +1162,21 @@ begin
+     sfCategoryPanelGroupHeaderNormal:
+       if TseStyle(Source).Fonts[ktfCategoryPanelGroupHeaderNormal].Color <> NewColor then
+         TseStyle(Source).Fonts[ktfCategoryPanelGroupHeaderNormal].Color := NewColor;
+-    sfCatgeoryButtonsCategoryNormal:
+-      if TseStyle(Source).Fonts[ktfCatgeoryButtonsCategoryNormal].Color <> NewColor then
+-        TseStyle(Source).Fonts[ktfCatgeoryButtonsCategoryNormal].Color := NewColor;
+-    sfCatgeoryButtonsCategorySelected:
+-      if TseStyle(Source).Fonts[ktfCatgeoryButtonsCategorySelected].Color <> NewColor then
+-        TseStyle(Source).Fonts[ktfCatgeoryButtonsCategorySelected].Color := NewColor;
+-    sfCatgeoryButtonsHot:
+-      if TseStyle(Source).Fonts[ktfCatgeoryButtonsHot].Color <> NewColor then
+-        TseStyle(Source).Fonts[ktfCatgeoryButtonsHot].Color := NewColor;
+-    sfCatgeoryButtonsNormal:
+-      if TseStyle(Source).Fonts[ktfCatgeoryButtonsNormal].Color <> NewColor then
+-        TseStyle(Source).Fonts[ktfCatgeoryButtonsNormal].Color := NewColor;
+-    sfCatgeoryButtonsSelected:
+-      if TseStyle(Source).Fonts[ktfCatgeoryButtonsSelected].Color <> NewColor then
+-        TseStyle(Source).Fonts[ktfCatgeoryButtonsSelected].Color := NewColor;
++    sfCategoryButtonsCategoryNormal:
++      if TseStyle(Source).Fonts[ktfCategoryButtonsCategoryNormal].Color <> NewColor then
++        TseStyle(Source).Fonts[ktfCategoryButtonsCategoryNormal].Color := NewColor;
++    sfCategoryButtonsCategorySelected:
++      if TseStyle(Source).Fonts[ktfCategoryButtonsCategorySelected].Color <> NewColor then
++        TseStyle(Source).Fonts[ktfCategoryButtonsCategorySelected].Color := NewColor;
++    sfCategoryButtonsHot:
++      if TseStyle(Source).Fonts[ktfCategoryButtonsHot].Color <> NewColor then
++        TseStyle(Source).Fonts[ktfCategoryButtonsHot].Color := NewColor;
++    sfCategoryButtonsNormal:
++      if TseStyle(Source).Fonts[ktfCategoryButtonsNormal].Color <> NewColor then
++        TseStyle(Source).Fonts[ktfCategoryButtonsNormal].Color := NewColor;
++    sfCategoryButtonsSelected:
++      if TseStyle(Source).Fonts[ktfCategoryButtonsSelected].Color <> NewColor then
++        TseStyle(Source).Fonts[ktfCategoryButtonsSelected].Color := NewColor;
+     sfCheckBoxTextDisabled:
+       if TseStyle(Source).Fonts[ktfCheckBoxTextDisabled].Color <> NewColor then
+         TseStyle(Source).Fonts[ktfCheckBoxTextDisabled].Color := NewColor;
+diff --git a/Common/Vcl.Styles.FontAwesome.pas b/Common/Vcl.Styles.FontAwesome.pas
+index 171df85..0e98030 100644
+--- a/Common/Vcl.Styles.FontAwesome.pas
++++ b/Common/Vcl.Styles.FontAwesome.pas
+@@ -25,7 +25,11 @@ interface
+ 
+ {$IF CompilerVersion >= 30.0}
+ 
++ // The optional animated control uses the old private VCL frame-list layout.
++ // Delphi 13 uses an image collection; do not expose this unsafe extension.
++ {$IF CompilerVersion < 37}
+  {$DEFINE WinXCtrls}
++ {$IFEND}
+ {$ENDIF}
+ 
+ uses

@@ -1,8 +1,25 @@
-# xEdit
+# xEdit - dwnfdrknss edition
 
-xEdit by ElminsterAU. The editing and conflict-resolution tool for Bethesda game plugins — Oblivion through Starfield.
+An independent fork of [xEdit](https://github.com/TES5Edit/TES5Edit), the Bethesda
+plugin editor and conflict-resolution tool created by ElminsterAU and developed
+by the upstream contributors credited below.
+
+We are updating and customizing our own modding tools, with **Starfield as the
+current focus**: investigating and fixing plugin bugs, testing changes, creating
+new mods, and supporting game- and save-related troubleshooting. Skyrim and
+Fallout 4 remain part of the broader toolset and are areas we may revisit as
+this work develops.
+
+This is an ongoing development fork. xEdit works on game plugins; direct
+save-file repair requires separate tools.
 
 ## Maintainers and Contributors
+
+**Fork maintainer and contributor:** [dwnfdrknss (@thatRALLiguy)](https://github.com/thatRALLiguy)
+
+Project direction, custom tool development, bug investigation, and mod testing.
+
+The following credits recognize the original xEdit project and its contributors.
 
 **Author and upstream maintainer:** [ElminsterAU](https://github.com/ElminsterAU) (since 2006)
 
@@ -18,11 +35,14 @@ See the [contributors graph](https://github.com/TES5Edit/TES5Edit/graphs/contrib
 
 ## GitHub Issue Tracker
 
-Our [GitHub issue tracker](https://github.com/TES5Edit/TES5Edit/issues) offers a place to submit and discuss feature requests and bug reports. When using it, please ensure that any criticism you provide is constructive.
+The upstream [GitHub issue tracker](https://github.com/TES5Edit/TES5Edit/issues) offers a place to submit and discuss feature requests and bug reports. When using it, please ensure that any criticism you provide is constructive.
 
 Please do not use the tracker for general help and support on how to use xEdit.
 
 ## Releases
+
+The links below are upstream xEdit releases. Custom work in this fork is
+developed separately; these links do not distribute the dwnfdrknss edition.
 
 The most recent builds are available through the [xEdit Discord](https://discord.com/invite/5t8RnNQ) in the `#xedit-builds` channel. The archive provided here is generic and works with all current game modes. See the [xEdit Versions](#xedit-versions) table in this document on how to properly use it.
 
@@ -77,6 +97,23 @@ Getting started with xEdit development requires a properly configured Delphi env
 ### Install Delphi
 
 If you don't already have a Delphi environment, we recommend using [Delphi 12 Community Edition](https://www.embarcadero.com/products/delphi/starter).
+
+For this fork with Delphi 13, initialize the pinned submodules, then run
+`powershell -File .\Tools\Prepare-Delphi13.ps1` from the repository root before
+opening the IDE. This applies the reviewed compatibility patches for SynEdit,
+JVCL, JCL, VirtualTrees, vcl-styles-utils, ImagingLib, lz4-delphi and
+libdeflate-pas, and creates missing JCL configuration files from the upstream
+template. Patches are kept in `Tools/compatibility`; the affected submodules
+will show local modifications while they are applied. Their original pinned
+commits are retained. The script can be rerun and refuses unexpected dependency
+revisions. Run `python Tests/delphi13_patches.py` to verify that the patches
+reproduce the modified dependency sources.
+Compile through the Community Edition IDE.
+
+The current build is not release-validated. A script that copies a populated
+`TSearchRec` still fails with an invalid-pointer error. See
+[IMPROVEMENTS.md](IMPROVEMENTS.md) for completed checks and remaining release
+gates; clean compiler diagnostics do not establish runtime or gameplay safety.
 
 ### Install Dependencies
 
