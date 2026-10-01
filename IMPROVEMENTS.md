@@ -79,3 +79,18 @@ unrelated header errors cannot contaminate the clean control.
 During test development a four-byte `TES4` input was accepted by the installed
 binary. That observation requires investigation during the input-safety review;
 it is not yet attributed to a particular core implementation path.
+
+## Round 3: empty command-line arguments (native test pending)
+
+Both overloads in `Core/wbCommandLine.pas` accessed `s[1]` without first checking
+whether an argument was empty. Skip empty strings when searching for switches;
+return them as positional arguments when iterating positions. This preserves
+explicitly supplied empty positions and avoids out-of-bounds string reads.
+No parsing or rewriting of mod records is involved.
+
+`Tests/CommandLineRegression.dpr` exercises empty leading/trailing arguments,
+a switch between positional arguments, an absent switch, output clearing and
+iterator advancement. Compile the actual helper with Delphi range checks enabled
+(`dcc64 -B -$R+ Tests\CommandLineRegression.dpr`) and run the resulting executable
+with four arguments: `"" -probe:value payload ""`. Native execution is pending;
+a source inspection is not an execution of this regression test.
