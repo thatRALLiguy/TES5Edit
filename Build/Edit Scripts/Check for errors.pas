@@ -11,7 +11,6 @@ begin
   Error := Check(aElement);
   Result := Error <> '';
   if Result then begin
-    Error := Check(aElement);
     AddMessage(StringOfChar(' ', aIndent * 2) + Name(aElement) + ' -> ' + Error);
   end;
 

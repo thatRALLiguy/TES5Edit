@@ -94,3 +94,16 @@ iterator advancement. Compile the actual helper with Delphi range checks enabled
 (`dcc64 -B -$R+ Tests\CommandLineRegression.dpr`) and run the resulting executable
 with four arguments: `"" -probe:value payload ""`. Native execution is pending;
 a source inspection is not an execution of this regression test.
+
+## Round 4: avoid duplicate validation work
+
+The recursive GUI error checker and bundled `Check for errors.pas` script called
+the same element's check method a second time whenever the first call returned
+an error. Reuse the diagnostic already obtained. Traversal, output formatting,
+parent summaries and descendant checks remain in place. The linear GUI checker
+and xDump already use one check call per element.
+
+Diff review confirms one redundant call removed from each implementation; no
+filters, record changes or skipped subtrees were introduced. This saves one
+validation call per erroneous element in these two paths. No elapsed-time
+speedup is claimed. GUI/script runtime verification remains pending.

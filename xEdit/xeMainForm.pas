@@ -2955,7 +2955,6 @@ begin
   Error := aElement.Check;
   Result := Error <> '';
   if Result then begin
-    Error := aElement.Check;
     wbProgress(StringOfChar(' ', aIndent * 2) + aElement.Name + ' -> ' + Error);
   end else
     wbProgress('');
