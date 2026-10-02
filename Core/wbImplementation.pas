@@ -19459,7 +19459,9 @@ var
 begin
   wbTick;
 
-  if aDeepCopy then
+  // A main-record source inserted into a value/array can supply only a
+  // FormID. Only group destinations copy that record's descendants here.
+  if aDeepCopy and (not Supports(aElement, IwbMainRecord) or (Self is TwbGroupRecord)) then
     wbRequireBoundedSource(aElement);
 
   {$IFDEF USE_CODESITE}
@@ -19567,8 +19569,11 @@ begin
           raise Exception.Create(aElement.Name + ' contains Reflection and can not be assigned');
 
       // Parent AssignInternal methods can clear the target and swallow a
-      // child's failed Assign result. Validate descendants before any mutation.
-      wbRequireBoundedSource(aElement);
+      // child's failed Assign result. Validate before copying descendants.
+      // Other uses of a main-record source assign its FormID, not its body.
+      if not Supports(aElement, IwbMainRecord) or
+        ((Self is TwbMainRecord) and (aIndex = wbAssignThis)) then
+        wbRequireBoundedSource(aElement);
       Result := AssignInternal(aIndex, aElement, aOnlySK);
     except
       on E: Exception do begin

@@ -64,6 +64,39 @@ begin
   Snapshot(F, Tag + '-valid');
 end;
 
+procedure ReferenceOnly;
+var Source, Target, Forms, Field, E, Linked: IInterface; N, BeforeCount: Integer; Tag: string;
+begin
+  Target := ListRecord(254);
+  Forms := ElementByPath(ElementByIndex(GroupBySignature(FileByName('Unbounded.esm'), 'FLST'), 0), 'FormIDs');
+  for N := 256 to 257 do begin
+    Source := ListRecord(N);
+    Tag := 'reference-' + IntToStr(N);
+    Snapshot(GetFile(Source), Tag + '-before');
+    AddRequiredElementMasters(Source, GetFile(Target), False, True);
+    AddRequiredElementMasters(Source, GetFile(Forms), False, True);
+    Field := ElementByPath(ElementByIndex(ElementByPath(Target, 'Leveled List Entries'), 0), 'LVLO\Item');
+    if not Assigned(Field) then raise Exception.Create('Missing LVLO Item field');
+    E := ElementAssign(Field, LowInteger, Source, False);
+    Linked := LinksTo(Field);
+    CheckResult(Assigned(Linked) and (GetLoadOrderFormID(Linked) = GetLoadOrderFormID(Source)), Tag + ' nested field assigns only FormID');
+    CheckResult(ElementCount(ElementByPath(Target, 'Leveled List Entries')) = 254, Tag + ' nested field retains target count');
+    Field := ElementByIndex(Forms, 0);
+    E := ElementAssign(Field, LowInteger, Source, False);
+    Linked := LinksTo(Field);
+    CheckResult(Assigned(Linked) and (GetLoadOrderFormID(Linked) = GetLoadOrderFormID(Source)), Tag + ' subrecord assigns only FormID');
+    BeforeCount := ElementCount(Forms);
+    E := ElementAssign(Forms, HighInteger, Source, False);
+    CheckResult(ElementCount(Forms) = BeforeCount + 1, Tag + ' appends one reference');
+    Linked := LinksTo(ElementByIndex(Forms, ElementCount(Forms) - 1));
+    CheckResult(Assigned(Linked) and (GetLoadOrderFormID(Linked) = GetLoadOrderFormID(Source)), Tag + ' appended reference resolves');
+    CheckResult(ElementCount(ElementByPath(Source, 'Leveled List Entries')) = N, Tag + ' source entries unchanged');
+    Snapshot(GetFile(Source), Tag + '-after');
+  end;
+  Snapshot(GetFile(Target), 'reference-list-valid');
+  Snapshot(GetFile(Forms), 'reference-formlist-valid');
+end;
+
 procedure Run;
 var Target, E: IInterface;
 begin
@@ -77,6 +110,7 @@ begin
   CheckResult(GetElementEditValues(Target, 'LLCT') = '255', 'valid whole-record count');
   CheckResult(GetElementEditValues(Target, 'EDID') = 'Limit255', 'valid whole-record editor ID');
   Snapshot(GetFile(Target), 'limits-repaired');
+  ReferenceOnly;
   Note('COMPLETE');
 end;
 
